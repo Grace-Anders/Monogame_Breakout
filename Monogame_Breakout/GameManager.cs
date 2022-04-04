@@ -77,22 +77,22 @@ namespace Monogame_Breakout
 
         public void DirectionAfterColision()
         {
-            if (pOne.collisionRectangle.Intersects(ballOne.LocationRect)) //if P1 ball hits P1 paddle
+            if (pOne.LocationRect.Intersects(ballOne.LocationRect)) //if P1 ball hits P1 paddle
             {
                 ballOne.Direction.X *= 1;
                 UpdateCheckBallCollision(ballOne, pOne);
             }
-            if (pOne.collisionRectangle.Intersects(ballTwo.LocationRect)) //if P2 ball hits P1 paddle
+            if (pOne.LocationRect.Intersects(ballTwo.LocationRect)) //if P2 ball hits P1 paddle
             {
                 ballTwo.Direction.X *= 1;
                 UpdateCheckBallCollision(ballTwo, pOne);
             }
-            if (pTwo.collisionRectangle.Intersects(ballOne.LocationRect)) //if P1 ball hits P2 paddle
+            if (pTwo.LocationRect.Intersects(ballOne.LocationRect)) //if P1 ball hits P2 paddle
             {
                 ballOne.Direction.X *= -1;
                 UpdateCheckBallCollision(ballOne, pTwo);
             }
-            if (pTwo.collisionRectangle.Intersects(ballTwo.LocationRect)) //if P2 ball hits P2 paddle
+            if (pTwo.LocationRect.Intersects(ballTwo.LocationRect)) //if P2 ball hits P2 paddle
             {
                 ballTwo.Direction.X *= -1;
                 UpdateCheckBallCollision(ballTwo, pTwo);
