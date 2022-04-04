@@ -50,6 +50,10 @@ namespace Monogame_Breakout
             pTwo = new Paddle(game, ballTwo);
             game.Components.Add(pTwo);
 
+#if ONEPLAYER
+            pTwo.autopaddle = true;
+#endif
+
             r = new Random();
         }
 

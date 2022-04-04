@@ -18,14 +18,16 @@ namespace Monogame_Breakout
         public PaddleController controller;
         Ball ball;      //Need reference to ball for collision
 
-        bool autopaddle;  //cheat
+        public bool autopaddle;  //cheat
 
         Game g;
 
         public Paddle(Game game, Ball b) : base(game)
         {
             g = game;
+#if DEBUG
             this.autopaddle = true;
+#endif
             this.Speed = 200;
             this.ball = b;
             controller = new PaddleController(game, ball);
