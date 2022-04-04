@@ -13,7 +13,7 @@ namespace Monogame_Breakout
 
         public static bool GameOver = false;
 
-        public static List<Paddle> Paddles = new List<Paddle>();
+        public static GameManager gm;
 
         static Utils() { }
 

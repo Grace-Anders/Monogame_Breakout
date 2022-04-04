@@ -13,8 +13,6 @@ namespace Monogame_Breakout
 {
     public class Paddle : DrawableSprite
     {
-        //Service Dependencies
-        GameConsole console;
 
         //Dependencies
         public PaddleController controller;
@@ -29,16 +27,6 @@ namespace Monogame_Breakout
             this.Speed = 200;
             this.ball = b;
             controller = new PaddleController(game, ball);
-
-            //Lazy load GameConsole
-            console = (GameConsole)this.Game.Services.GetService(typeof(IGameConsole));
-            if (console == null) //ohh no no console make a new one and add it to the game
-            {
-                console = new GameConsole(this.Game);
-                this.Game.Components.Add(console);  //add a new game console to Game
-            }
-
-            r = new Random();
         }
 
         protected override void LoadContent()
@@ -50,7 +38,7 @@ namespace Monogame_Breakout
             base.LoadContent();
         }
 
-        Rectangle collisionRectangle;  //Rectangle for paddle collision uses just the top of the paddle instead of the whole sprite
+        public Rectangle collisionRectangle;  //Rectangle for paddle collision uses just the top of the paddle instead of the whole sprite
 
         public override void Update(GameTime gameTime)
         {
@@ -65,7 +53,7 @@ namespace Monogame_Breakout
                     UpdateMoveBallWithPaddle();
                     break;
                 case BallState.Playing:
-                    UpdateCheckBallCollision();
+                    Utils.gm.DirectionAfterColision();
                     break;
             }
 
@@ -99,90 +87,6 @@ namespace Monogame_Breakout
             else if (Utils.P1 == false)
             {
                 ball.Location = new Vector2(this.Location.X - (this.LocationRect.Width  - ball.spriteTexture.Width/2), this.Location.Y + (this.SpriteTexture.Height / 2 - ball.spriteTexture.Height / 2));
-            }
-        }
-
-
-        private void UpdateCheckBallCollision()
-        {
-            //Ball Collsion
-            //Very simple collision with ball only uses rectangles
-            foreach (Paddle Paddle in Utils.Paddles)
-            {
-                if (collisionRectangle.Intersects(ball.LocationRect))
-                {
-                    //TODO Change angle based on location of collision or direction of paddle
-
-                    ball.Direction.X *= -1;
-
-                    UpdateBallCollisionBasedOnPaddleImpactLocation();
-                    UpdateBallCollisionRandomFuness();
-                    console.GameConsoleWrite("Paddle collision ballLoc:" + ball.Location + " paddleLoc:" + this.Location.ToString());
-                }
-            }
-
-            //if (collisionRectangle.Intersects(ball.LocationRect))
-            //{
-            //    //TODO Change angle based on location of collision or direction of paddle
-
-            //    ball.Direction.X *= -1;
-
-            //    UpdateBallCollisionBasedOnPaddleImpactLocation();
-            //    UpdateBallCollisionRandomFuness();
-            //    console.GameConsoleWrite("Paddle collision ballLoc:" + ball.Location + " paddleLoc:" + this.Location.ToString());
-            //}
-        }
-
-        Random r;
-
-        /// <summary>
-        /// Adds a bit of randomness to the ball bounce
-        /// </summary>
-        private void UpdateBallCollisionRandomFuness()
-        {   
-            GetReflectEntropy();
-        }
-
-
-        private void GetReflectEntropy()
-        {
-            Utils.CheckWhichPlayer(this, Game);
-            if (Utils.P1 == true) { ball.Direction.X = 1 + ((r.Next(0, 3) - 1) * 0.1f); }//return -.9, -1 or -1.1
-            else if (Utils.P1 == false) { ball.Direction.X = - 1 + ((r.Next(0, 3) - 1) * 0.1f); }
-            
-        }
-
-        /// <summary>
-        /// Makes the paddle more able to direct the ball
-        /// </summary>
-        private void UpdateBallCollisionBasedOnPaddleImpactLocation()
-        {
-            //Change angle based on paddle movement
-
-            if (this.Direction.Y > 0)//down
-            {
-                ball.Direction.Y += .1f;
-            }
-            if (this.Direction.Y < 0)//up
-            {
-                ball.Direction.Y -= .1f;
-            }
-            //Change anlge based on side of paddle
-            //First Third
-
-            if ((ball.Location.Y > this.Location.Y) && (ball.Location.Y < this.Location.Y + this.spriteTexture.Height / 3))
-            {
-                console.GameConsoleWrite("1st Third");
-                ball.Direction.Y += .1f;
-            }
-            if ((ball.Location.Y > this.Location.Y + (this.spriteTexture.Height / 3)) && (ball.Location.Y < this.Location.Y + (this.spriteTexture.Height / 3) * 2))
-            {
-                console.GameConsoleWrite("2nd third");
-            }
-            if ((ball.Location.Y > (this.Location.Y + (this.spriteTexture.Height / 3) * 2)) && (ball.Location.Y < this.Location.Y + (this.spriteTexture.Height)))
-            {
-                console.GameConsoleWrite("3rd third");
-                ball.Direction.Y -= .1f;
             }
         }
 
