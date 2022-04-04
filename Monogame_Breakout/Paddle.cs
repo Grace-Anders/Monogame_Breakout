@@ -11,19 +11,18 @@ using MonoGameLibrary.Util;
 
 namespace Monogame_Breakout
 {
-    class Paddle : DrawableSprite
+    public class Paddle : DrawableSprite
     {
         //Service Dependencies
         GameConsole console;
 
         //Dependencies
-        PaddleController controller;
+        public PaddleController controller;
         Ball ball;      //Need reference to ball for collision
 
         bool autopaddle;  //cheat
 
-        public Paddle(Game game, Ball b)
-            : base(game)
+        public Paddle(Game game, Ball b) : base(game)
         {
 
             this.autopaddle = true;
@@ -44,18 +43,11 @@ namespace Monogame_Breakout
 
         protected override void LoadContent()
         {
-            this.spriteTexture = this.Game.Content.Load<Texture2D>("paddleSmall");
 #if DEBUG   //Show markers if we are in debug mode
             this.ShowMarkers = true;
 #endif
-            SetInitialLocation();
+            //SetInitialLocation();
             base.LoadContent();
-        }
-
-        public void SetInitialLocation()
-        {
-            this.Location = new Vector2(300, 450); //Shouldn't hard code inital position TODO set to be realtive to windows size
-
         }
 
         Rectangle collisionRectangle;  //Rectangle for paddle collision uses just the top of the paddle instead of the whole sprite
@@ -87,7 +79,7 @@ namespace Monogame_Breakout
 
             if (autopaddle && ball.State == BallState.Playing) //Alllow cheating
             {
-                this.Location.X = ball.Location.X - ((int)this.spriteTexture.Width / 2 * this.scale);
+                this.Location.Y = ball.Location.Y - ((int)this.spriteTexture.Width / 2 * this.scale);
             }
 
             base.Update(gameTime);
@@ -97,8 +89,19 @@ namespace Monogame_Breakout
         {
             ball.Speed = 0;
             ball.Direction = Vector2.Zero;
-            ball.Location = new Vector2(this.Location.X + (this.LocationRect.Width / 2 - ball.SpriteTexture.Width / 2), this.Location.Y - ball.SpriteTexture.Height);
+
+            Utils.CheckWhichPlayer(this, Game);
+
+            if (Utils.P1 == true)
+            {
+                ball.Location = new Vector2(this.Location.X + this.LocationRect.Width, this.Location.Y + (this.SpriteTexture.Height / 2 - ball.spriteTexture.Height / 2));
+            }
+            else if (Utils.P1 == false)
+            {
+                ball.Location = new Vector2(this.Location.X - (this.LocationRect.Width  - ball.spriteTexture.Width/2), this.Location.Y + (this.SpriteTexture.Height / 2 - ball.spriteTexture.Height / 2));
+            }
         }
+
 
         private void UpdateCheckBallCollision()
         {
@@ -107,7 +110,11 @@ namespace Monogame_Breakout
             if (collisionRectangle.Intersects(ball.LocationRect))
             {
                 //TODO Change angle based on location of collision or direction of paddle
-                ball.Direction.Y *= -1;
+
+                Utils.CheckWhichPlayer(this, Game);
+                if(Utils.P1 == true) { ball.Direction.Y *= -1; }
+                if(Utils.P1 == false) { ball.Direction.Y *= 1; }
+
                 UpdateBallCollisionBasedOnPaddleImpactLocation();
                 UpdateBallCollisionRandomFuness();
                 console.GameConsoleWrite("Paddle collision ballLoc:" + ball.Location + " paddleLoc:" + this.Location.ToString());
@@ -120,18 +127,17 @@ namespace Monogame_Breakout
         /// Adds a bit of randomness to the ball bounce
         /// </summary>
         private void UpdateBallCollisionRandomFuness()
-        {
-            /// 
-            /// Adds a bit of entropy to bounce nothing should be perfect
-            /// 
-            /// 
-            ball.Direction.Y = GetReflectEntropy();
+        {   
+            GetReflectEntropy();
         }
 
 
-        private float GetReflectEntropy()
+        private void GetReflectEntropy()
         {
-            return -1 + ((r.Next(0, 3) - 1) * 0.1f); //return -.9, -1 or -1.1
+            Utils.CheckWhichPlayer(this, Game);
+            if (Utils.P1 == true) { ball.Direction.X = - 1 + ((r.Next(0, 3) - 1) * 0.1f); }//return -.9, -1 or -1.1
+            else if (Utils.P1 == false) { ball.Direction.X = 1 + ((r.Next(0, 3) - 1) * 0.1f); }
+            
         }
 
         /// <summary>
@@ -140,36 +146,36 @@ namespace Monogame_Breakout
         private void UpdateBallCollisionBasedOnPaddleImpactLocation()
         {
             //Change angle based on paddle movement
-            if (this.Direction.X > 0)
+            if (this.Direction.Y > 0)
             {
-                ball.Direction.X += .1f;
+                ball.Direction.Y += .1f;
             }
-            if (this.Direction.X < 0)
+            if (this.Direction.Y < 0)
             {
-                ball.Direction.X -= .1f;
+                ball.Direction.Y -= .1f;
             }
             //Change anlge based on side of paddle
             //First Third
 
-            if ((ball.Location.X > this.Location.X) && (ball.Location.X < this.Location.X + this.spriteTexture.Width / 3))
+            if ((ball.Location.Y > this.Location.Y) && (ball.Location.Y < this.Location.Y + this.spriteTexture.Height / 3))
             {
                 console.GameConsoleWrite("1st Third");
-                ball.Direction.X += .1f;
+                ball.Direction.Y += .1f;
             }
-            if ((ball.Location.X > this.Location.X + (this.spriteTexture.Width / 3)) && (ball.Location.X < this.Location.X + (this.spriteTexture.Width / 3) * 2))
+            if ((ball.Location.Y > this.Location.Y + (this.spriteTexture.Height / 3)) && (ball.Location.Y < this.Location.Y + (this.spriteTexture.Height / 3) * 2))
             {
                 console.GameConsoleWrite("2nd third");
             }
-            if ((ball.Location.X > (this.Location.X + (this.spriteTexture.Width / 3) * 2)) && (ball.Location.X < this.Location.X + (this.spriteTexture.Width)))
+            if ((ball.Location.Y > (this.Location.Y + (this.spriteTexture.Height / 3) * 2)) && (ball.Location.Y < this.Location.Y + (this.spriteTexture.Height)))
             {
                 console.GameConsoleWrite("3rd third");
-                ball.Direction.X -= .1f;
+                ball.Direction.Y -= .1f;
             }
         }
 
         private void KeepPaddleOnScreen()
         {
-            this.Location.X = MathHelper.Clamp(this.Location.X, 0, this.Game.GraphicsDevice.Viewport.Width - this.spriteTexture.Width);
+            this.Location.Y = MathHelper.Clamp(this.Location.Y, 0, this.Game.GraphicsDevice.Viewport.Height - this.spriteTexture.Height);
         }
     }
 }

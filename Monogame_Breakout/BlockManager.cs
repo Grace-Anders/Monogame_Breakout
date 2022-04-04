@@ -8,7 +8,7 @@ namespace Monogame_Breakout
         public List<MonogameBlock> Blocks { get; private set; } //List of Blocks the are managed by Block Manager
 
         //Dependancy on Ball
-        Ball ball;
+        Ball ballOne, ballTwo;
 
         List<MonogameBlock> blocksToRemove; //list of block to remove probably because they were hit
 
@@ -17,13 +17,14 @@ namespace Monogame_Breakout
         /// </summary>
         /// <param name="game">Reference to Game</param>
         /// <param name="ball">Refernce to Ball for collision</param>
-        public BlockManager(Game game, Ball b)
+        public BlockManager(Game game, Ball bOne, Ball bTwo)
             : base(game)
         {
             this.Blocks = new List<MonogameBlock>();
             this.blocksToRemove = new List<MonogameBlock>();
 
-            this.ball = b;
+            this.ballOne = bOne;
+            this.ballTwo = bTwo;
         }
 
         public override void Initialize()
@@ -94,7 +95,7 @@ namespace Monogame_Breakout
             foreach (var block in blocksToRemove)
             {
                 Blocks.Remove(block);
-                ScoreManager.Score++;
+                //ScoreManager.Score++;
             }
             blocksToRemove.Clear();
         }
@@ -107,19 +108,28 @@ namespace Monogame_Breakout
                 {
                     b.Update(gameTime); //Update Block
                     //Ball Collision
-                    if (b.Intersects(ball)) //chek rectagle collision between ball and current block 
+                    if (b.Intersects(ballOne)) //chek rectagle collision between ball and current block 
                     {
-                        //hit
-                        b.HitByBall(ball);
-                        if (b.BlockState == BlockState.Broken)
-                            blocksToRemove.Add(b);  //Ball is hit add it to remove list
-                        if (!reflected) //only reflect once
-                        {
-                            ball.Reflect(b);
-                            this.reflected = true;
-                        }
+                        BlockHit(b, ballOne);
+                    }
+                    else if (b.Intersects(ballTwo))
+                    {
+                        BlockHit(b, ballTwo);
                     }
                 }
+            }
+        }
+
+        private void BlockHit(MonogameBlock b, Ball ball)
+        {
+            //hit
+            b.HitByBall(ball);
+            if (b.BlockState == BlockState.Broken)
+                blocksToRemove.Add(b);  //Ball is hit add it to remove list
+            if (!reflected) //only reflect once
+            {
+                ball.Reflect(b);
+                this.reflected = true;
             }
         }
 

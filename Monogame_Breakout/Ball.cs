@@ -27,14 +27,11 @@ namespace Monogame_Breakout
                 console = new GameConsole(this.Game);
                 this.Game.Components.Add(console);  //add a new game console to Game
             }
+
+            //WhichLost = false;
 #if DEBUG
             this.ShowMarkers = true;
 #endif
-        }
-
-        public void SetInitialLocation()
-        {
-            this.Location = new Vector2(200, 300); //Hard coded position TODO fix this
         }
 
         public void LaunchBall(GameTime gameTime)
@@ -48,7 +45,6 @@ namespace Monogame_Breakout
         protected override void LoadContent()
         {
             this.spriteTexture = this.Game.Content.Load<Texture2D>("ballSmall");
-            SetInitialLocation();
             base.LoadContent();
         }
 
@@ -78,20 +74,23 @@ namespace Monogame_Breakout
         {
             this.Location += this.Direction * (this.Speed * gameTime.ElapsedGameTime.Milliseconds / 1000);
 
-            //bounce off wall
-            //Left and Right
-            if ((this.Location.X + this.spriteTexture.Width > this.Game.GraphicsDevice.Viewport.Width)
-                ||
-                (this.Location.X < 0))
+            //P2 Fault
+            if (this.Location.X + this.spriteTexture.Width > this.Game.GraphicsDevice.Viewport.Width)
             {
-                this.Direction.X *= -1;
+                Utils.P2Lost = true;
+                this.resetBall(gameTime);
+                //this.Direction.X *= -1;
             }
-            //bottom Miss
-            if (this.Location.Y + this.spriteTexture.Height > this.Game.GraphicsDevice.Viewport.Height)
+            if (this.Location.X < 0)//P1 Fault
             {
+                Utils.P1Lost = true;
                 this.resetBall(gameTime);
             }
-
+            if (this.Location.Y + this.spriteTexture.Height > this.Game.GraphicsDevice.Viewport.Height)
+            {
+                this.Direction.Y *= -1;
+                //this.resetBall(gameTime);
+            }
             //Top
             if (this.Location.Y < 0)
             {

@@ -16,10 +16,13 @@ namespace Monogame_Breakout
 
         //Components
         BlockManager bm;
-        Paddle paddle;
-        Ball ball;
+        Paddle pOne;
+        Ball ballOne;
 
-        ScoreManager score;
+        Paddle pTwo;
+        Ball ballTwo;
+
+        ScoreManager sm;
 
         public Game1() : base()
         {
@@ -35,16 +38,22 @@ namespace Monogame_Breakout
 #endif
             this.Components.Add(input);
 
-            score = new ScoreManager(this);
-            this.Components.Add(score);
+            sm = new ScoreManager(this);
+            
+            this.Components.Add(sm);
 
             //GameComponents
-            ball = new Ball(this); //Ball first paddle and block manager depend on ball
-            this.Components.Add(ball);
-            paddle = new Paddle(this, ball);
-            this.Components.Add(paddle);
+            ballOne = new Ball(this); //Ball first paddle and block manager depend on ball
+            this.Components.Add(ballOne);
+            pOne = new Paddle(this, ballOne);
+            this.Components.Add(pOne);
 
-            bm = new BlockManager(this, ball);
+            ballTwo = new Ball(this); //Ball first paddle and block manager depend on ball
+            this.Components.Add(ballTwo);
+            pTwo = new Paddle(this, ballTwo);
+            this.Components.Add(pTwo);
+
+            bm = new BlockManager(this, ballOne, ballTwo);
             this.Components.Add(bm);
         }
 
@@ -59,6 +68,18 @@ namespace Monogame_Breakout
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            pOne.spriteTexture = Content.Load<Texture2D>("paddleOne");
+            pOne.Location = new Vector2((0), (GraphicsDevice.Viewport.Height / 2 - (pOne.spriteTexture.Height / 2)));
+            pOne.controller.Up = Keys.W;
+            pOne.controller.Down = Keys.S;
+            pOne.controller.Launch = Keys.LeftShift;
+
+            pTwo.spriteTexture = Content.Load<Texture2D>("paddleTwo");
+            pTwo.Location = new Vector2((GraphicsDevice.Viewport.Width - (pTwo.spriteTexture.Width)), (GraphicsDevice.Viewport.Height / 2 - (pTwo.spriteTexture.Height / 2)));
+            pTwo.controller.Up = Keys.U;
+            pTwo.controller.Down = Keys.J;
+            pTwo.controller.Launch = Keys.RightShift;
+
             base.LoadContent();
         }
 
@@ -67,10 +88,24 @@ namespace Monogame_Breakout
             // TODO: Unload any non ContentManager content here
         }
 
+        bool Which; // P1 = true | P2 = false
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            if(Utils.P1Lost == true)
+            {
+                Which = true;
+                sm.DecreaseLives(Which);
+                Utils.P1Lost = false;
+            }
+            if (Utils.P2Lost == true)
+            {
+                Which = false;
+                sm.DecreaseLives(Which);
+                Utils.P2Lost = false;
+            }
 
             base.Update(gameTime);
         }

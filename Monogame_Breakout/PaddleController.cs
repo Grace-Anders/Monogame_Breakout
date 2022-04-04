@@ -4,11 +4,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Monogame_Breakout
 {
-    class PaddleController
+    public class PaddleController
     {
         InputHandler input;
         Ball ball; //may should delgate to parent
         public Vector2 Direction { get; private set; }
+
+        public Keys Up, Down, Launch;
 
         public PaddleController(Game game, Ball ball)
         {
@@ -22,18 +24,17 @@ namespace Monogame_Breakout
             this.Direction = Vector2.Zero;  //Start with no direction on each new upafet
 
             //No need to sum input only uses left and right
-            if (input.KeyboardState.IsKeyDown(Keys.Left))
+            if (input.KeyboardState.IsKeyDown(Up))
             {
-                this.Direction = new Vector2(-1, 0);
+                this.Direction = new Vector2(0, -1);
             }
-            if (input.KeyboardState.IsKeyDown(Keys.Right))
+            if (input.KeyboardState.IsKeyDown(Down))
             {
-                this.Direction = new Vector2(1, 0);
+                this.Direction = new Vector2(0, 1);
             }
-            //TODO add mouse controll?
 
             //Up launches ball
-            if (input.KeyboardState.WasKeyPressed(Keys.Up))
+            if (input.KeyboardState.WasKeyPressed(Launch))
             {
                 if (ball.State == BallState.OnPaddleStart) //Only Launch Ball is it's on paddle
                     this.ball.LaunchBall(gametime);
