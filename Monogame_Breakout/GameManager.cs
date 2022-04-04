@@ -11,7 +11,7 @@ namespace Monogame_Breakout
     public class GameManager : DrawableGameComponent
     {
         //Service Dependencies
-        public GameConsole console;
+        public static GameConsole console;
 
         public Paddle pOne;
         public Ball ballOne;
@@ -151,6 +151,11 @@ namespace Monogame_Breakout
                 b.Direction.Y -= .1f;
             }
 
+        }
+
+        public static void WriteToConsole(string write)
+        {
+            console.GameConsoleWrite(write);
         }
 
         public static void CheckWhichPlayer(Paddle p, Game game)

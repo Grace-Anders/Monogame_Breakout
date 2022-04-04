@@ -59,7 +59,8 @@ namespace Monogame_Breakout
             {
                 if( P1Lives -1 == 0)
                 {
-
+                    GameManager.WriteToConsole("Player One is Dead");
+                    GameManager.GameOver = true;
                 }
                 else
                 {
@@ -70,8 +71,16 @@ namespace Monogame_Breakout
             }
             if(which == false || Decreased == false)//p2
             {
-                P2Lives--;
-                Decreased = true;
+                if (P2Lives - 1 == 0)
+                {
+                    GameManager.WriteToConsole("Player Two is Dead");
+                    GameManager.GameOver = true;
+                }
+                else
+                {
+                    P2Lives--;
+                    Decreased = true;
+                }
             }
         }
 

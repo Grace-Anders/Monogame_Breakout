@@ -87,6 +87,8 @@ namespace Monogame_Breakout
 
             if(GameManager.GameOver == true)
             {
+                GameManager.WriteToConsole("A player has died and the game has restarted");
+
                 gm.ballOne.State = BallState.OnPaddleStart;
                 gm.ballTwo.State = BallState.OnPaddleStart;
                 ScoreManager.SetupNewGame();
