@@ -65,6 +65,7 @@ namespace Monogame_Breakout
             pOne.controller.Down = Keys.S;
             pOne.controller.Launch = Keys.LeftShift;
             ballOne.LaunchDirection = new Vector2(1, -1);
+            ballOne.DrawColor = Color.Red;
 
             pTwo.spriteTexture = g.Content.Load<Texture2D>("paddleTwo");
             pTwo.Location = new Vector2((GraphicsDevice.Viewport.Width - (pTwo.spriteTexture.Width)), (GraphicsDevice.Viewport.Height / 2 - (pTwo.spriteTexture.Height / 2)));
@@ -72,6 +73,7 @@ namespace Monogame_Breakout
             pTwo.controller.Down = Keys.J;
             pTwo.controller.Launch = Keys.RightShift;
             ballTwo.LaunchDirection = new Vector2(-1, -1);
+            ballTwo.DrawColor = Color.Blue;
 
             base.LoadContent();
         }
