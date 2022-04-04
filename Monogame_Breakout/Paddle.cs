@@ -90,7 +90,14 @@ namespace Monogame_Breakout
 
         private void KeepPaddleOnScreen()
         {
-            this.Location.Y = MathHelper.Clamp(this.Location.Y, 0, this.Game.GraphicsDevice.Viewport.Height - this.spriteTexture.Height);
+            if(this.Location.Y < 0)
+            {
+                this.Location.Y = MathHelper.Clamp(this.Location.Y, 0, this.Game.GraphicsDevice.Viewport.Height - this.spriteTexture.Height);
+            }
+            if(this.Location.Y > this.Game.GraphicsDevice.Viewport.Height - this.spriteTexture.Height)
+            {
+                this.Location.Y = MathHelper.Clamp(this.Location.Y, 0, this.Game.GraphicsDevice.Viewport.Height - this.spriteTexture.Height);
+            }
         }
     }
 }

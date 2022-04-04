@@ -103,7 +103,7 @@ namespace Monogame_Breakout
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.DarkOliveGreen);
 
             base.Draw(gameTime);
         }
