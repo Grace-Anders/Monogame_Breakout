@@ -107,18 +107,30 @@ namespace Monogame_Breakout
         {
             //Ball Collsion
             //Very simple collision with ball only uses rectangles
-            if (collisionRectangle.Intersects(ball.LocationRect))
+            foreach (Paddle Paddle in Utils.Paddles)
             {
-                //TODO Change angle based on location of collision or direction of paddle
+                if (collisionRectangle.Intersects(ball.LocationRect))
+                {
+                    //TODO Change angle based on location of collision or direction of paddle
 
-                Utils.CheckWhichPlayer(this, Game);
-                if(Utils.P1 == true) { ball.Direction.Y *= -1; }
-                if(Utils.P1 == false) { ball.Direction.Y *= 1; }
+                    ball.Direction.X *= -1;
 
-                UpdateBallCollisionBasedOnPaddleImpactLocation();
-                UpdateBallCollisionRandomFuness();
-                console.GameConsoleWrite("Paddle collision ballLoc:" + ball.Location + " paddleLoc:" + this.Location.ToString());
+                    UpdateBallCollisionBasedOnPaddleImpactLocation();
+                    UpdateBallCollisionRandomFuness();
+                    console.GameConsoleWrite("Paddle collision ballLoc:" + ball.Location + " paddleLoc:" + this.Location.ToString());
+                }
             }
+
+            //if (collisionRectangle.Intersects(ball.LocationRect))
+            //{
+            //    //TODO Change angle based on location of collision or direction of paddle
+
+            //    ball.Direction.X *= -1;
+
+            //    UpdateBallCollisionBasedOnPaddleImpactLocation();
+            //    UpdateBallCollisionRandomFuness();
+            //    console.GameConsoleWrite("Paddle collision ballLoc:" + ball.Location + " paddleLoc:" + this.Location.ToString());
+            //}
         }
 
         Random r;
@@ -135,8 +147,8 @@ namespace Monogame_Breakout
         private void GetReflectEntropy()
         {
             Utils.CheckWhichPlayer(this, Game);
-            if (Utils.P1 == true) { ball.Direction.X = - 1 + ((r.Next(0, 3) - 1) * 0.1f); }//return -.9, -1 or -1.1
-            else if (Utils.P1 == false) { ball.Direction.X = 1 + ((r.Next(0, 3) - 1) * 0.1f); }
+            if (Utils.P1 == true) { ball.Direction.X = 1 + ((r.Next(0, 3) - 1) * 0.1f); }//return -.9, -1 or -1.1
+            else if (Utils.P1 == false) { ball.Direction.X = - 1 + ((r.Next(0, 3) - 1) * 0.1f); }
             
         }
 
@@ -146,11 +158,12 @@ namespace Monogame_Breakout
         private void UpdateBallCollisionBasedOnPaddleImpactLocation()
         {
             //Change angle based on paddle movement
-            if (this.Direction.Y > 0)
+
+            if (this.Direction.Y > 0)//down
             {
                 ball.Direction.Y += .1f;
             }
-            if (this.Direction.Y < 0)
+            if (this.Direction.Y < 0)//up
             {
                 ball.Direction.Y -= .1f;
             }

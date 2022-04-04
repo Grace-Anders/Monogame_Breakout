@@ -6,8 +6,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Monogame_Breakout
 {
+    public enum PlayerState { P1Dead, P2Dead, Living }
+
     public class ScoreManager : DrawableGameComponent
     {
+
+        public PlayerState State { get; private set; }
 
         SpriteFont font;
         public static int P1Lives, P2Lives;
@@ -23,9 +27,22 @@ namespace Monogame_Breakout
         public ScoreManager(Game game)
             : base(game)
         {
+            this.State = PlayerState.Living;
             SetupNewGame();
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            switch (this.State)
+            {
+                case PlayerState.P1Dead:
+                case PlayerState.P2Dead:
+                    Utils.GameOver = true;
+                    break;
+            }
+
+            base.Update(gameTime);
+        }
 
         private static void SetupNewGame()  //Generally mixing static and non static methods is messy be careful
         {
@@ -40,8 +57,16 @@ namespace Monogame_Breakout
             Decreased = false;
             if(which == true && Decreased == false)//p1
             {
-                P1Lives--;
-                Decreased = true;
+                if( P1Lives -1 == 0)
+                {
+
+                }
+                else
+                {
+                    P1Lives--;
+                    Decreased = true;
+                }
+                
             }
             if(which == false || Decreased == false)//p2
             {

@@ -15,6 +15,8 @@ namespace Monogame_Breakout
 
         GameConsole console;
 
+        public Vector2 LaunchDirection;
+
         public Ball(Game game)
             : base(game)
         {
@@ -37,7 +39,7 @@ namespace Monogame_Breakout
         public void LaunchBall(GameTime gameTime)
         {
             this.Speed = 190; //hard coded speed TODO fix this
-            this.Direction = new Vector2(1, -1); //hard coded launch direction TODO fix this
+            this.Direction = LaunchDirection; //hard coded launch direction TODO fix this
             this.State = BallState.Playing;
             this.console.GameConsoleWrite("Ball Launched " + gameTime.TotalGameTime.ToString());
         }
@@ -100,7 +102,9 @@ namespace Monogame_Breakout
 
         public void Reflect(MonogameBlock block)
         {
-            this.Direction.Y *= -1; //TODO check for side collision with block
+            //if()
+
+            this.Direction.X *= -1; //TODO check for side collision with block
         }
     }
 }

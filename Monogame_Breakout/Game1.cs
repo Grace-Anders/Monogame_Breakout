@@ -46,12 +46,16 @@ namespace Monogame_Breakout
             ballOne = new Ball(this); //Ball first paddle and block manager depend on ball
             this.Components.Add(ballOne);
             pOne = new Paddle(this, ballOne);
+            Utils.Paddles.Add(pOne);
             this.Components.Add(pOne);
 
             ballTwo = new Ball(this); //Ball first paddle and block manager depend on ball
             this.Components.Add(ballTwo);
             pTwo = new Paddle(this, ballTwo);
+            Utils.Paddles.Add(pTwo);
             this.Components.Add(pTwo);
+
+
 
             bm = new BlockManager(this, ballOne, ballTwo);
             this.Components.Add(bm);
@@ -73,12 +77,14 @@ namespace Monogame_Breakout
             pOne.controller.Up = Keys.W;
             pOne.controller.Down = Keys.S;
             pOne.controller.Launch = Keys.LeftShift;
+            ballOne.LaunchDirection = new Vector2(1, -1);
 
             pTwo.spriteTexture = Content.Load<Texture2D>("paddleTwo");
             pTwo.Location = new Vector2((GraphicsDevice.Viewport.Width - (pTwo.spriteTexture.Width)), (GraphicsDevice.Viewport.Height / 2 - (pTwo.spriteTexture.Height / 2)));
             pTwo.controller.Up = Keys.U;
             pTwo.controller.Down = Keys.J;
             pTwo.controller.Launch = Keys.RightShift;
+            ballTwo.LaunchDirection = new Vector2(-1, -1);
 
             base.LoadContent();
         }
@@ -105,6 +111,11 @@ namespace Monogame_Breakout
                 Which = false;
                 sm.DecreaseLives(Which);
                 Utils.P2Lost = false;
+            }
+
+            if(Utils.GameOver == true)
+            {
+                //Game over logic
             }
 
             base.Update(gameTime);

@@ -10,6 +10,11 @@ namespace Monogame_Breakout
         public static bool P1;
 
         public static bool P1Lost, P2Lost = false;
+
+        public static bool GameOver = false;
+
+        public static List<Paddle> Paddles = new List<Paddle>();
+
         static Utils() { }
 
         //check which pattle
