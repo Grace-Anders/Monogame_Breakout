@@ -21,6 +21,13 @@ namespace Monogame_Breakout
 
         Game g;
 
+        //static values 
+        public static bool P1;
+
+        public static bool P1Lost, P2Lost = false;
+
+        public static bool GameOver = false;
+
         public GameManager(Game game) : base(game)
         {
             //Lazy load GameConsole
@@ -70,12 +77,8 @@ namespace Monogame_Breakout
             base.Update(gameTime);
         }
 
-        private void GameReset()
-        {
 
-        }
-
-        public void DirectionAfterColision()
+        public void DirectionAfterCollision()
         {
             if (pOne.LocationRect.Intersects(ballOne.LocationRect)) //if P1 ball hits P1 paddle
             {
@@ -110,9 +113,9 @@ namespace Monogame_Breakout
 
         private void UpdateBallCollisionRandomFuness(Ball b, Paddle p)
         {
-            Utils.CheckWhichPlayer(p, Game);
-            if (Utils.P1 == true) { b.Direction.X = 1 + ((r.Next(0, 3) - 1) * 0.1f); }//return -.9, -1 or -1.1
-            else if (Utils.P1 == false) { b.Direction.X = -1 + ((r.Next(0, 3) - 1) * 0.1f); }
+            CheckWhichPlayer(p, Game);
+            if (P1 == true) { b.Direction.X = 1 + ((r.Next(0, 3) - 1) * 0.1f); }//return -.9, -1 or -1.1
+            else if (P1 == false) { b.Direction.X = -1 + ((r.Next(0, 3) - 1) * 0.1f); }
         }
 
         /// <summary>
@@ -147,6 +150,13 @@ namespace Monogame_Breakout
                 console.GameConsoleWrite("3rd third");
                 b.Direction.Y -= .1f;
             }
+
+        }
+
+        public static void CheckWhichPlayer(Paddle p, Game game)
+        {
+            if (p.Location.X < game.GraphicsDevice.Viewport.Width / 2) { P1 = true; }
+            else if (p.Location.X > game.GraphicsDevice.Viewport.Width / 2) { P1 = false; }
         }
     }
 }

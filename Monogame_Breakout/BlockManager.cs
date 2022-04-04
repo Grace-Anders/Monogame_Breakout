@@ -36,9 +36,17 @@ namespace Monogame_Breakout
         /// <summary>
         /// Replacable Method to Load a Level by filling the Blocks List with Blocks
         /// </summary>
+        /// 
+
+        int BlocksWide = 1;
         protected virtual void LoadLevel()
         {
-            CreateBlockArrayByWidthAndHeight(1, 13, 1);
+            ballOne.Speed += ballOne.Speed * (.10f * ScoreManager.Level);
+            if(ScoreManager.Level % 2 == 0)
+            {
+                BlocksWide++;
+            }
+            CreateBlockArrayByWidthAndHeight(BlocksWide, 13, 1);
         }
 
         /// <summary>
@@ -131,6 +139,16 @@ namespace Monogame_Breakout
                 ball.Reflect(b);
                 this.reflected = true;
             }
+        }
+
+        public void BlockReset()
+        {
+            foreach (MonogameBlock b in Blocks)
+            {
+                blocksToRemove.Add(b);
+            }
+            UpdateRemoveDisabledBlocks();
+            LoadLevel();
         }
 
         /// <summary>

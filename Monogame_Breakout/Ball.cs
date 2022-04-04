@@ -11,7 +11,7 @@ namespace Monogame_Breakout
 
     public class Ball : DrawableSprite
     {
-        public BallState State { get; private set; }
+        public BallState State { get; set; }
 
         GameConsole console;
 
@@ -38,8 +38,8 @@ namespace Monogame_Breakout
 
         public void LaunchBall(GameTime gameTime)
         {
-            this.Speed = 190; //hard coded speed TODO fix this
-            this.Direction = LaunchDirection; //hard coded launch direction TODO fix this
+            this.Speed = 150; //hard coded speed TODO fix this
+            this.Direction = LaunchDirection;
             this.State = BallState.Playing;
             this.console.GameConsoleWrite("Ball Launched " + gameTime.TotalGameTime.ToString());
         }
@@ -79,13 +79,13 @@ namespace Monogame_Breakout
             //P2 Fault
             if (this.Location.X + this.spriteTexture.Width > this.Game.GraphicsDevice.Viewport.Width)
             {
-                Utils.P2Lost = true;
+                GameManager.P2Lost = true;
                 this.resetBall(gameTime);
                 //this.Direction.X *= -1;
             }
             if (this.Location.X < 0)//P1 Fault
             {
-                Utils.P1Lost = true;
+                GameManager.P1Lost = true;
                 this.resetBall(gameTime);
             }
             if (this.Location.Y + this.spriteTexture.Height > this.Game.GraphicsDevice.Viewport.Height)

@@ -37,14 +37,14 @@ namespace Monogame_Breakout
             {
                 case PlayerState.P1Dead:
                 case PlayerState.P2Dead:
-                    Utils.GameOver = true;
+                    GameManager.GameOver = true;
                     break;
             }
 
             base.Update(gameTime);
         }
 
-        private static void SetupNewGame()  //Generally mixing static and non static methods is messy be careful
+        public static void SetupNewGame()  //Generally mixing static and non static methods is messy be careful
         {
             P1Lives = P2Lives = 3;
             //P1Score = P2Score = 0;

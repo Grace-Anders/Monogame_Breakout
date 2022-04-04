@@ -20,9 +20,11 @@ namespace Monogame_Breakout
 
         bool autopaddle;  //cheat
 
+        Game g;
+
         public Paddle(Game game, Ball b) : base(game)
         {
-
+            g = game;
             this.autopaddle = true;
             this.Speed = 200;
             this.ball = b;
@@ -38,12 +40,8 @@ namespace Monogame_Breakout
             base.LoadContent();
         }
 
-        public Rectangle collisionRectangle;  //Rectangle for paddle collision uses just the top of the paddle instead of the whole sprite
-
         public override void Update(GameTime gameTime)
         {
-            //Update Collision Rect
-            collisionRectangle = new Rectangle((int)this.Location.X, (int)this.Location.Y, this.spriteTexture.Width, 1);
 
             //Deal with ball state
             switch (ball.State)
@@ -53,7 +51,7 @@ namespace Monogame_Breakout
                     UpdateMoveBallWithPaddle();
                     break;
                 case BallState.Playing:
-                    Utils.gm.DirectionAfterColision();
+                    Game1.gm.DirectionAfterCollision();
                     break;
             }
 
@@ -78,13 +76,13 @@ namespace Monogame_Breakout
             ball.Speed = 0;
             ball.Direction = Vector2.Zero;
 
-            Utils.CheckWhichPlayer(this, Game);
+            GameManager.CheckWhichPlayer(this, Game);
 
-            if (Utils.P1 == true)
+            if (GameManager.P1 == true)
             {
                 ball.Location = new Vector2(this.Location.X + this.LocationRect.Width, this.Location.Y + (this.SpriteTexture.Height / 2 - ball.spriteTexture.Height / 2));
             }
-            else if (Utils.P1 == false)
+            else if (GameManager.P1 == false)
             {
                 ball.Location = new Vector2(this.Location.X - (this.LocationRect.Width  - ball.spriteTexture.Width/2), this.Location.Y + (this.SpriteTexture.Height / 2 - ball.spriteTexture.Height / 2));
             }

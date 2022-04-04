@@ -14,10 +14,13 @@ namespace Monogame_Breakout
         InputHandler input;
         GameConsole console;
 
-
         ScoreManager sm;
 
         BlockManager bm;
+
+        //static vaules
+        public static GameManager gm;
+        
 
         public Game1() : base()
         {
@@ -37,10 +40,10 @@ namespace Monogame_Breakout
             
             this.Components.Add(sm);
 
-            Utils.gm = new GameManager(this);
-            this.Components.Add(Utils.gm);
+            gm = new GameManager(this);
+            this.Components.Add(gm);
 
-            bm = new BlockManager(this, Utils.gm.ballOne, Utils.gm.ballTwo);
+            bm = new BlockManager(this, gm.ballOne, gm.ballTwo);
             this.Components.Add(bm);
         }
 
@@ -69,22 +72,28 @@ namespace Monogame_Breakout
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if(Utils.P1Lost == true)
+            if(GameManager.P1Lost == true)
             {
                 Which = true;
                 sm.DecreaseLives(Which);
-                Utils.P1Lost = false;
+                GameManager.P1Lost = false;
             }
-            if (Utils.P2Lost == true)
+            if (GameManager.P2Lost == true)
             {
                 Which = false;
                 sm.DecreaseLives(Which);
-                Utils.P2Lost = false;
+                GameManager.P2Lost = false;
             }
 
-            if(Utils.GameOver == true)
+            if(GameManager.GameOver == true)
             {
-                //Game over logic
+                gm.ballOne.State = BallState.OnPaddleStart;
+                gm.ballTwo.State = BallState.OnPaddleStart;
+                ScoreManager.SetupNewGame();
+                bm.BlockReset();
+
+                GameManager.GameOver = false;
+
             }
 
             base.Update(gameTime);
@@ -96,5 +105,7 @@ namespace Monogame_Breakout
 
             base.Draw(gameTime);
         }
+
+        
     }
 }
